@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Stop Cutting Trees",
+    "picture": "images/forestAndCity.jpg",
+    "goalAmount": 500000,
+    "currentAmount": 0
+  },
+  {
+    "name": "Stop Polluting Ocean",
+    "picture": "images/ocean.jpg",
+    "goalAmount": 3200000,
+    "currentAmount": 2000
+  },
+  {
+    "name": "Keep Animals Clean",
+    "picture": "images/ducksInOil.jpg",
+    "goalAmount": 40000,
+    "currentAmount": 1310
+  },
+  {
+    "name": "Ban GMO Crops",
+    "picture": "images/wheatField.jpg",
+    "goalAmount": 390000,
+    "currentAmount": 300
+  },
+  {
+    "name": "Slow Down Global Warming",
+    "picture": "images/iceMelting.jpg",
+    "goalAmount": 42800000,
+    "currentAmount": 32334
+  }
+]

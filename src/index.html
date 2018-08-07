@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Benevo Projects</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>		
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+          <h1 class="text-center">BenevoProjects</h1>
+          <hr/>
+          <br/>
+        </div>
+      </div>
+
+      <div id="projectRow" class="row">
+      </div>
+    </div>
+
+    <div id="projectTemplate" style="display: none;">
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="panel panel-default panel-project">
+          <div class="panel-heading">
+            <h3 class="panel-title">Project Title</h3>
+          </div>
+          <div class="panel-body">
+            <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;" src="https://images.unsplash.com/photo-1513908491671-b629a74290bd?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=c13ff40c4c5606156b2331e016e3c77f&auto=format&fit=crop&w=1950&q=80" data-holder-rendered="true">
+            <br/><br/>
+            <strong>Name: </strong>: <span class="project-name">Stop Forest Fire</span><br/>
+            <strong>Goal Amount: </strong>: <span class="goal-amount">452000</span><br/>
+            <strong>Current Amount: </strong>: <span class="current-amount">4524</span><br/><br/>
+            <button class="btn btn-default btn-donate" type="button" data-id="0">Donate</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/web3.min.js"></script>
+    <script src="js/truffle-contract.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
