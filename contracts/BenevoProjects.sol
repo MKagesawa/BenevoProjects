@@ -3,7 +3,6 @@ pragma solidity ^0.4.19;
 import "node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "contracts/BenevoToken.sol";
 import "node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "contracts/SHA1.sol";
 
 // pausable enables emergency stop
 contract BenevoProjects is Pausable {
@@ -43,8 +42,8 @@ contract BenevoProjects is Pausable {
 
     //Donate BenevoToken to the project
     function donate(uint _id, uint amountToDonate) public whenNotPaused {
-        _BenevoToken bt;
-        bt.transferFrom(msg.sender, projects[_id].projectAddress, amountToDonate);
+        _BenevoToken bnt;
+        bnt.transferFrom(msg.sender, projects[_id].projectAddress, amountToDonate);
         projects[_id].currentAmount += amountToDonate;
     }
 
@@ -53,12 +52,12 @@ contract BenevoProjects is Pausable {
         @param _amountToWithdraw Amount of BenevoToken to be released
     */
     function releaseDonation(uint _projectId, uint _amountToWithdraw) public whenNotPaused returns (bool success){
-        _BenevoToken bt;
+        _BenevoToken bnt;
         require(_amountToWithdraw <= projects[_projectId].currentAmount, "cannot withdraw more than current project balance");
         require(msg.sender == projects[_projectId].ownerAddress, "only project creator can withdraw");
         //Subtract withdraw amount before releasing token to prevent re-entrancy attack
         projects[_projectId].currentAmount.sub(_amountToWithdraw);
-        bt.transferFrom(projects[_projectId].projectAddress, projects[_projectId].ownerAddress, _amountToWithdraw);
+        bnt.transferFrom(projects[_projectId].projectAddress, projects[_projectId].ownerAddress, _amountToWithdraw);
         return true;
     }
 

@@ -134,7 +134,7 @@ contract _BenevoToken is ERC20Interface, Ownable {
     public returns (bool success) {
         //the PoW must contain work that includes a recent ethereum block hash (challenge number) 
         //and the msg.sender's address to prevent MITM attacks
-        bytes32 digest = keccak256(challengeNumber, msg.sender, nonce);
+        bytes32 digest = keccak256(abi.encodePacked(challengeNumber, msg.sender, nonce));
         if (digest != challenge_digest) revert("challenge digest must match the expected");
         if(uint256(digest) > miningTarget) revert("digest must be smaller than target");
         //only allow one reward for each challenge
@@ -173,7 +173,7 @@ contract _BenevoToken is ERC20Interface, Ownable {
         }
       //make the latest ethereum block hash a part of the next challenge for PoW to prevent pre-mining future blocks
       //do this last since this is a protection mechanism in the mint() function
-        challengeNumber = block.blockhash(block.number - 1);
+        challengeNumber = blockhash(block.number - 1);
     }
 
     //https://en.bitcoin.it/wiki/Difficulty#What_is_the_formula_for_difficulty.3F
@@ -190,13 +190,13 @@ contract _BenevoToken is ERC20Interface, Ownable {
         //if there were less eth blocks passed in time than expected
         if( ethBlocksSinceLastDifficultyPeriod < targetEthBlocksPerDiffPeriod )
         {
-            uint excess_block_pct = (targetEthBlocksPerDiffPeriod.mul(100)).div( ethBlocksSinceLastDifficultyPeriod );
+            uint excess_block_pct = (targetEthBlocksPerDiffPeriod.mul(100)).div(ethBlocksSinceLastDifficultyPeriod);
             uint excess_block_pct_extra = excess_block_pct.sub(100).limitLessThan(1000);
             // If there were 5% more blocks mined than expected then this is 5.  If there were 100% more blocks mined than expected then this is 100.
             //make it harder
             miningTarget = miningTarget.sub(miningTarget.div(2000).mul(excess_block_pct_extra));   //by up to 50 %
         }else{
-            uint shortage_block_pct = (ethBlocksSinceLastDifficultyPeriod.mul(100)).div( targetEthBlocksPerDiffPeriod );
+            uint shortage_block_pct = (ethBlocksSinceLastDifficultyPeriod.mul(100)).div(targetEthBlocksPerDiffPeriod);
             uint shortage_block_pct_extra = shortage_block_pct.sub(100).limitLessThan(1000); //always between 0 and 1000
             //make it easier
             miningTarget = miningTarget.add(miningTarget.div(2000).mul(shortage_block_pct_extra));   //by up to 50 %
@@ -231,20 +231,20 @@ contract _BenevoToken is ERC20Interface, Ownable {
     function getMiningReward() public view returns (uint) {
         //once we get half way thru the coins, only get 25 per block
          //every reward era, the reward amount halves.
-        return (50 * 10**uint(decimals) ).div( 2**rewardEra ) ;
+        return (50 * 10**uint(decimals) ).div(2**rewardEra) ;
     }
 
     //help debug mining software
     function getMintDigest(uint256 nonce, bytes32 challenge_digest, bytes32 challenge_number) 
     public view returns (bytes32 digesttest) {
-        bytes32 digest = keccak256(challenge_number,msg.sender,nonce);
+        bytes32 digest = keccak256(abi.encodePacked(challenge_number,msg.sender,nonce));
         return digest;
     }
 
     //help debug mining software
     function checkMintSolution(uint256 nonce, bytes32 challenge_digest, bytes32 challenge_number, uint testTarget) 
     public view returns (bool success) {
-        bytes32 digest = keccak256(challenge_number,msg.sender,nonce);
+        bytes32 digest = keccak256(abi.encodePacked(challenge_number,msg.sender,nonce));
         if(uint256(digest) > testTarget) revert("digest must not be higher than test Target");
         return (digest == challenge_digest);
     }
