@@ -61,5 +61,7 @@ typings/
 .next
 
 .DS_Store
-.vscode
+.vscode/
 
+# ignore build folder since user can easily build it themselves
+build/
