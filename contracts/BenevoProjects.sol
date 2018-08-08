@@ -3,6 +3,7 @@ pragma solidity ^0.4.19;
 import "node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "contracts/BenevoToken.sol";
 import "node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "contracts/SHA1.sol";
 
 // pausable enables emergency stop
 contract BenevoProjects is Pausable {
@@ -21,6 +22,7 @@ contract BenevoProjects is Pausable {
         uint currentAmount;
         uint currentBalance;
         address ownerAddress;
+        address projectAddress;
     }
 
     mapping (uint => Project) public projects;
@@ -34,16 +36,16 @@ contract BenevoProjects is Pausable {
     
     function _createProject(string _name, uint _goalAmount) private whenNotPaused returns(string){
         projectsCount ++;
-        projects[projectsCount] = Project(projectsCount, _name, _goalAmount, 0, 0, msg.sender);
+        projects[projectsCount] = Project(projectsCount, _name, _goalAmount, 0, 0, msg.sender, address(ripemd160(abi.encodePacked(msg.sender))));
         emit NewProject(projectsCount, _name, _goalAmount);
         return _name;
     }
 
     //Donate BenevoToken to the project
-    function donate(uint _id, uint amount) public whenNotPaused {
+    function donate(uint _id, uint amountToDonate) public whenNotPaused {
         _BenevoToken bt;
-        bt.transferFrom(msg.sender, projects[_id].ownerAddress, amount);
-        projects[_id].currentAmount += amount;
+        bt.transferFrom(msg.sender, projects[_id].projectAddress, amountToDonate);
+        projects[_id].currentAmount += amountToDonate;
     }
 
     /** @dev Release the escrowed donation to the project owner 
@@ -51,11 +53,12 @@ contract BenevoProjects is Pausable {
         @param _amountToWithdraw Amount of BenevoToken to be released
     */
     function releaseDonation(uint _projectId, uint _amountToWithdraw) public whenNotPaused returns (bool success){
-        Project project = projects[_projectId];
-        require(_amountToWithdraw <= project.currentAmount, "cannot withdraw more than current project balance");
-        require(msg.sender == project.ownerAddress, "only project creator can withdraw");
-        //projects[_id].currentAmount.sub(_amountToWithdraw);
-        //TODO
+        _BenevoToken bt;
+        require(_amountToWithdraw <= projects[_projectId].currentAmount, "cannot withdraw more than current project balance");
+        require(msg.sender == projects[_projectId].ownerAddress, "only project creator can withdraw");
+        //Subtract withdraw amount before releasing token to prevent re-entrancy attack
+        projects[_projectId].currentAmount.sub(_amountToWithdraw);
+        bt.transferFrom(projects[_projectId].projectAddress, projects[_projectId].ownerAddress, _amountToWithdraw);
         return true;
     }
 
