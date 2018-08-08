@@ -5,6 +5,14 @@ import "node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 // Inspired by 0xBitcoin Token and EIP 918 Mineable Token Standard
 
+library ExtendedMath {
+    //return the smaller of the two inputs (a or b)
+    function limitLessThan(uint a, uint b) internal pure returns (uint c) {
+        if(a > b) return b;
+        return a;
+    }
+}
+
 contract ERC20Interface {
     function totalSupply() public view returns (uint);
     function balanceOf(address tokenOwner) public view returns (uint balance);
@@ -16,13 +24,6 @@ contract ERC20Interface {
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
 }
 
-library ExtendedMath {
-    //return the smaller of the two inputs (a or b)
-    function limitLessThan(uint a, uint b) internal pure returns (uint c) {
-        if(a > b) return b;
-        return a;
-    }
-}
 
 contract ApproveAndCallFallBack {
     function receiveApproval(address from, uint256 tokens, address token, bytes data) public;
@@ -57,6 +58,7 @@ contract Owned {
 */
 
 contract _BenevoToken is ERC20Interface, Ownable {
+    //all arithmetic operation in this contract uses Openzeppelin's SafeMath library
     using SafeMath for uint;
     using ExtendedMath for uint;
     string public symbol;
@@ -64,25 +66,52 @@ contract _BenevoToken is ERC20Interface, Ownable {
     uint8 public decimals;
     uint public _totalSupply;
     uint public latestDifficultyPeriodStarted;
-    uint public epochCount;//number of 'blocks' mined
+    //number of 'blocks' mined
+    uint public epochCount; 
     uint public _BLOCKS_PER_READJUSTMENT = 1024;
     //Larger the target, easier to solve the block
     uint public _MINIMUM_TARGET = 2**16;
     uint public _MAXIMUM_TARGET = 2**224;
     uint public miningTarget;
-    bytes32 public challengeNumber;   //generate a new one when a new reward is minted
+    //generate a new one when a new reward is minted
+    bytes32 public challengeNumber;
     uint public rewardEra;
     uint public maxSupplyForEra;
     address public lastRewardTo;
     uint public lastRewardAmount;
     uint public lastRewardEthBlockNumber;
-    bool locked = false;
-    mapping(bytes32 => bytes32) solutionForChallenge;
     uint public tokensMinted;
+    bool locked = false;
+   
+    mapping(bytes32 => bytes32) solutionForChallenge;
     mapping(address => uint) balances;
     mapping(address => mapping(address => uint)) allowed;
+    
     event Mint(address indexed from, uint reward_amount, uint epochCount, bytes32 newChallengeNumber);
 
+    /**
+        @notice Prevent ERC20 short address attack.
+        @param size data length
+    */
+    modifier onlyPayloadSize(uint256 size) {
+        if(msg.data.length < size + 4) {
+            revert("address too short");
+        }
+        _;
+    }
+
+    /**
+        @notice Accept from only valid addresses
+        @param _address Memory address
+    */
+    modifier onlyValidAddress(address _address) {
+        require(_address != 0x0, "not a valid address (starting from 0x0)");
+        _;
+    }
+
+    /*
+        @notice Deafault Constructor
+    */
     
     constructor() public onlyOwner {
         symbol = "BNV";
@@ -101,7 +130,8 @@ contract _BenevoToken is ERC20Interface, Ownable {
         //_startNewMiningEpoch();
     }
 
-    function mint(uint256 nonce, bytes32 challenge_digest) public returns (bool success) {
+    function mint(uint256 nonce, bytes32 challenge_digest) 
+    public returns (bool success) {
         //the PoW must contain work that includes a recent ethereum block hash (challenge number) 
         //and the msg.sender's address to prevent MITM attacks
         bytes32 digest = keccak256(challengeNumber, msg.sender, nonce);
@@ -219,46 +249,67 @@ contract _BenevoToken is ERC20Interface, Ownable {
         return (digest == challenge_digest);
     }
 
-    function totalSupply() public view returns (uint) {
+    function totalSupply() 
+    public view returns (uint) {
         return _totalSupply - balances[address(0)];
     }
 
-    // Get the token balance for account `tokenOwner`
-    function balanceOf(address tokenOwner) public view returns (uint balance) {
+    /**
+        @notice Get the token balance for the given address
+        @param tokenOwner Address whose balance should be queried
+        @return uint256 Represents the balance
+    */
+    function balanceOf(address tokenOwner) 
+    public view returns (uint balance) {
         return balances[tokenOwner];
     }
 
-    // Transfer the balance from token owner's account to `to` account
-    // - Owner's account must have sufficient balance to transfer
-    // - 0 value transfers are allowed
+    /**
+        @notice Transfer token from token owner's account to 'to' account
+        Owner account must have sufficient balance
+        0 value transfers allowed
+        @param to Address to transfer token to
+        @param tokens Value to be transferred
+    */
 
-    function transfer(address to, uint tokens) public returns (bool success) {
+    function transfer(address to, uint tokens)
+    public 
+    onlyPayloadSize(2 * 32)
+    onlyValidAddress(to)
+    returns (bool success) {
         balances[msg.sender] = balances[msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
         emit Transfer(msg.sender, to, tokens);
         return true;
     }
 
-    // Token owner can approve for `spender` to transferFrom(...) `tokens`
-    // from the token owner's account
-    // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
-    // recommends that there are no checks for the approval double-spend attack
-    // as this should be implemented in user interfaces
+    /**
+        @notice Approve the 'spender address' to spend the specified amounts of
+        tokens on behalf of msg.sender or token owner
+        @param spender Spender of the funds
+        @param tokens Amounf of tokens to be spent
+    */
 
-    function approve(address spender, uint tokens) public returns (bool success) {
+    function approve(address spender, uint tokens) 
+    public returns (bool success) {
         allowed[msg.sender][spender] = tokens;
         emit Approval(msg.sender, spender, tokens);
         return true;
     }
 
-    // Transfer `tokens` from the `from` account to the `to` account
-    // The calling account must already have sufficient tokens approve(...)-d
-    // for spending from the `from` account and
-    // - From account must have sufficient balance to transfer
-    // - Spender must have sufficient allowance to transfer
-    // - 0 value transfers are allowed
+    /**
+        @notice Transfer tokens from one account to another
+        0 value transfers allowed
+        @param from Source address, must have sufficient balance
+        @param to Target address, must have sufficient allowance
+        @param tokens Amount of tokens to be transferred
+    */
 
-    function transferFrom(address from, address to, uint tokens) public returns (bool success) {
+    function transferFrom(address from, address to, uint tokens)
+    public
+    onlyValidAddress(from)
+    onlyValidAddress(to)
+    returns (bool success) {
         balances[from] = balances[from].sub(tokens);
         allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
@@ -266,27 +317,49 @@ contract _BenevoToken is ERC20Interface, Ownable {
         return true;
     }
 
-    // Returns the amount of tokens approved by the owner that can be transferred to the spender's account
-    function allowance(address tokenOwner, address spender) public view returns (uint remaining) {
+    /**
+        @notice returns the amount of tokens allowed by owner that can be 
+        transferred to spender's account
+        @param tokenOwner Token owner's address
+        @param spender Spender's address
+        @return uint256 Amount of tokens available to the spender
+    */
+    
+    function allowance(address tokenOwner, address spender) 
+    public
+    onlyValidAddress(tokenOwner) 
+    onlyValidAddress(spender)
+    view returns (uint remaining) {
         return allowed[tokenOwner][spender];
     }
 
     // Token owner can approve for `spender` to transferFrom(...) `tokens`
     // from the token owner's account. The `spender` contract function
     // `receiveApproval(...)` is then executed
-    function approveAndCall(address spender, uint tokens, bytes data) public returns (bool success) {
+    function approveAndCall(address spender, uint tokens, bytes data) 
+    public returns (bool success) {
         allowed[msg.sender][spender] = tokens;
         emit Approval(msg.sender, spender, tokens);
         ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, this, data);
         return true;
     }
 
+    /**
+        @notice Eth payable fallback
+    */
+
     function () public payable {
         revert("Don't accept ETH");
     }
 
     // Owner can transfer out any accidentally sent ERC20 tokens
-    function transferAnyERC20Token(address tokenAddress, uint tokens) public onlyOwner returns (bool success) {
+    function transferAnyERC20Token(address tokenAddress, uint tokens) 
+    public onlyOwner returns (bool success) {
         return ERC20Interface(tokenAddress).transfer(owner, tokens);
+    }
+
+    //kill the smart contract
+    function kill() public onlyOwner {
+        selfdestruct(owner);
     }
 }
