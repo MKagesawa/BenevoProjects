@@ -24,25 +24,29 @@ contract BenevoProjects is Pausable {
         address projectAddress;
     }
 
-    mapping (uint => Project) public projects;
+    mapping (uint => Project) projects;
 
-    uint public projectsCount;
+    uint public projectsCount = 0;
 
     /** @dev Create a new project with a BenevoToken contractAccount
       * @param _name The name of the project
       * @param _goalAmount Goal amount of BenevoToken to be donated
     */
     
-    function _createProject(string _name, uint _goalAmount) private whenNotPaused returns(string){
+    function _createProject(string _name, uint _goalAmount) 
+    public whenNotPaused returns(uint, string, uint, uint, uint, address, address){
         projectsCount ++;
         projects[projectsCount] = Project(projectsCount, _name, _goalAmount, 0, 0, msg.sender, address(ripemd160(abi.encodePacked(msg.sender))));
         emit NewProject(projectsCount, _name, _goalAmount);
-        return _name;
+        return (projectsCount, _name, _goalAmount, 0, 0, msg.sender, address(ripemd160(abi.encodePacked(msg.sender))));
     }
 
-    //Donate BenevoToken to the project
+    /** @dev Donate BenevoToken to the project
+      * @param _id The id of the project
+      * @param amountToDonate Amount of BenevoToken to donate to the project
+    */
     function donate(uint _id, uint amountToDonate) public whenNotPaused {
-        _BenevoToken bnt;
+        BenevoToken bnt;
         bnt.transferFrom(msg.sender, projects[_id].projectAddress, amountToDonate);
         projects[_id].currentAmount += amountToDonate;
     }
@@ -52,7 +56,7 @@ contract BenevoProjects is Pausable {
         @param _amountToWithdraw Amount of BenevoToken to be released
     */
     function releaseDonation(uint _projectId, uint _amountToWithdraw) public whenNotPaused returns (bool success){
-        _BenevoToken bnt;
+        BenevoToken bnt;
         require(_amountToWithdraw <= projects[_projectId].currentAmount, "cannot withdraw more than current project balance");
         require(msg.sender == projects[_projectId].ownerAddress, "only project creator can withdraw");
         //Subtract withdraw amount before releasing token to prevent re-entrancy attack

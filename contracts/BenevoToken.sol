@@ -57,7 +57,7 @@ contract Owned {
 }
 */
 
-contract _BenevoToken is ERC20Interface, Ownable {
+contract BenevoToken is ERC20Interface, Ownable {
     //all arithmetic operation in this contract uses Openzeppelin's SafeMath library
     using SafeMath for uint;
     using ExtendedMath for uint;

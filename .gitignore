@@ -61,7 +61,13 @@ typings/
 .next
 
 .DS_Store
-.vscode/
+
+# ignore all vscode related files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 # ignore build folder since user can easily build it themselves
 build/

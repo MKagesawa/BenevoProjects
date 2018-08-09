@@ -5,5 +5,4 @@ import "truffle/DeployedAddresses.sol";
 import "../contracts/BenevoToken.sol";
 
 contract testBenevoToken {
-    _BenevoToken bnt;
 }
