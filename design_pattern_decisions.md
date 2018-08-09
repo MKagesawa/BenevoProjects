@@ -10,5 +10,9 @@ Since I am planning to add escrow functionality to each project in the future, r
 ### _createProject return variables
 Initially, I designed the _createProject function not returning anything. When I was making the tests for it, I tried to access the Project through projects mapping. However when returning a struct from a mapping I was unable to save the struct for later assert equal tests. After some research I discover this is due to the way Solidity saves objects. Instead of using encoders and other tricks to make the code unneccesarily complicated, I decided to return all of the struct's variables, which is lengthy but clear and simple.
 
+### testCreateProject split to two functions
+When I had two of them together, I got "CompilerError: Stack too deep, try removing local variables".
+I maxed the maximum number of local variables I could declare, so I split the test into two tests.
+
 ## Future Improvements
 - directly mine BenevoToken for a project
