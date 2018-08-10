@@ -32,10 +32,10 @@ contract testBenevoProjects {
         var (resultId, resultName, resultGoalAmount, resultCurrentAmount, resultCurrentBalance, resultOwnerAddress, 
         resultProjectAddress) = project._createProject("Save Animals", 30000);
         
-        Assert.equal(resultId,   expectedId,   "Project should have Id 1");
-        Assert.equal(resultName, expectedName, "First Project should have name 'Save Animals'");
-        Assert.equal(resultGoalAmount, expectedGoalAmount, "Project should have goal amount 30000 imals'");
-        Assert.equal(resultCurrentAmount, expectedCurrentAmount, "Project should have current amount 0");
+        Assert.equal(resultId,   expectedId,   "should have Id 1");
+        Assert.equal(resultName, expectedName, "should have name 'Save Animals'");
+        Assert.equal(resultGoalAmount, expectedGoalAmount, "should have goal amount 30000 imals'");
+        Assert.equal(resultCurrentAmount, expectedCurrentAmount, "should have current amount 0");
     }
 
     function test_CreateProject2(){
@@ -45,21 +45,22 @@ contract testBenevoProjects {
         var (resultId, resultName, resultGoalAmount, resultCurrentAmount, resultCurrentBalance, resultOwnerAddress, 
         resultProjectAddress) = project._createProject("Save Animals", 30000);
 
-        Assert.equal(resultCurrentBalance, expectedCurrentBalance, "Project should have current balance 0");
-        Assert.equal(resultOwnerAddress, expectedOwnerAddress, "Project should have owner address of the sender");
-        Assert.equal(resultProjectAddress, expectedProjectAddress, "Project should have project address the hash of the address of the sender");
+        Assert.equal(resultCurrentBalance, expectedCurrentBalance, "should have current balance 0");
+        Assert.equal(resultOwnerAddress, expectedOwnerAddress, "should have owner address of the sender");
+        Assert.equal(resultProjectAddress, expectedProjectAddress, "should have project address the hash of the address of the sender");
     }
 
-    /** @notice when a project is created, it is important all properties are correct and
-        all parameters fired are correct. The hashing function also must output correctly.
+    /** @notice Token transfer deals with value so must be done correctly and securely.
+        First donating 4000 then 6000 should total 10000
     */
 
     function testDonate(){
-        
+        uint expected = 10000;
+        project.donate(1, 4000);
+        Assert.equal(project.donate(1, 6000), expected, "should have newBalance 10000 after two donations");
     }
 
-    /** @notice when a project is created, it is important all properties are correct and
-        all parameters fired are correct. The hashing function also must output correctly.
+    /** @notice When tokens are released, it should be able to be withdrawn
     */
 
     function testReleaseDonation(){

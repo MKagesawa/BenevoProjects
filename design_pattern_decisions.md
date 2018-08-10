@@ -14,5 +14,8 @@ Initially, I designed the _createProject function not returning anything. When I
 When I had two of them together, I got "CompilerError: Stack too deep, try removing local variables".
 I maxed the maximum number of local variables I could declare, so I split the test into two tests.
 
+### releaseDonation function uses "pull over push"
+To avoid the send call from errors due to the receiving address with a fallback function, project owners can withdraw funds instead of having the tokens sent to their address.
+
 ## Future Improvements
 - directly mine BenevoToken for a project
