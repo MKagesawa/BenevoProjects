@@ -12,6 +12,8 @@ BenevoProjects strive to becomes a platform where anyone can create projects to 
 Currently there are some websites which users can mine Monero for a good cause.
 However the lack of transparency of Monero leaves the miners wondering where their donations actually go to.
 
+## Set up local server
+
 ## In the Future
 When the society adopts Blockchain-Based Token Economy, goods and services will be tokenized onto the blockchain where everyone can verify all transactions. BenevoProjects hope to integrate with those blockchains and serve as an escrow service releasing donations to the project owners only when they have both proved they have used the donations for and delivered the results they have promised on the blockchain.
 

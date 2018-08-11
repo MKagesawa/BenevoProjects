@@ -1,8 +1,8 @@
 pragma solidity ^0.4.19;
 
 import "node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
-import "contracts/BenevoToken.sol";
 import "node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "contracts/BenevoToken.sol";
 
 // pausable enables emergency stop
 contract BenevoProjects is Pausable {
@@ -36,9 +36,9 @@ contract BenevoProjects is Pausable {
     /** @dev Project getter
         @param _id Project id
     */
-    function getProject(uint _id) public view returns (uint, string, uint, uint, uint, address, address, bool){
+    function getProject(uint _id) public view returns (string, uint, uint, uint, address, address, bool){
         Project memory project = projects[_id];
-        return (project.id, project.name, project.goalAmount, project.currentAmount, project.currentBalance, 
+        return (project.name, project.goalAmount, project.currentAmount, project.currentBalance, 
         project.ownerAddress, project.projectAddress, project.canWithdraw);
     }
 
@@ -51,10 +51,10 @@ contract BenevoProjects is Pausable {
     public whenNotPaused returns(uint, string, uint, uint, uint, address, address){
         projectsCount ++;
         projects[projectsCount] = Project(projectsCount, _name, _goalAmount, 0, 0, msg.sender,
-            address(ripemd160(abi.encodePacked(msg.sender))), false);
+            this, false);
         owners[msg.sender] = projects[projectsCount];
         emit NewProject(projectsCount, _name, _goalAmount, msg.sender);
-        return (projectsCount, _name, _goalAmount, 0, 0, msg.sender, address(ripemd160(abi.encodePacked(msg.sender))));
+        return (projectsCount, _name, _goalAmount, 0, 0, msg.sender, this);
     }
 
     /** @dev Donate BenevoToken to the project
@@ -62,7 +62,11 @@ contract BenevoProjects is Pausable {
       * @param amountToDonate Amount of BenevoToken to donate to the project
     */
     function donate(uint _id, uint amountToDonate) public whenNotPaused returns (uint newBalance){
-        bnt.transferFrom(msg.sender, projects[_id].projectAddress, amountToDonate);
+        //require(_id > 0 && _id <= projectsCount, "not a valid project address");
+        //bnt.transferFrom(msg.sender, projects[_id].projectAddress, amountToDonate);
+        BenevoToken donorBnt = BenevoToken(msg.sender);
+        BenevoToken projectBnt = BenevoToken(this);
+        bnt.transferFrom(msg.sender, this, amountToDonate);
         newBalance = projects[_id].currentAmount += amountToDonate;
         return newBalance;
     }
@@ -75,7 +79,7 @@ contract BenevoProjects is Pausable {
     function releaseDonation(uint _projectId, uint amountToRelease) public whenNotPaused returns (bool success){
         Project memory project = projects[_projectId];
         require(amountToRelease <= project.currentAmount, "cannot withdraw more than current project balance");
-        require(msg.sender == project.ownerAddress, "only project creator can withdraw");
+        require(msg.sender != project.ownerAddress, "only non-project owner can call release Donation");
         project.canWithdraw = true;
         return true;
     }
@@ -84,6 +88,7 @@ contract BenevoProjects is Pausable {
      */
 
     function withdrawToken() external{
+        require(msg.sender == project.ownerAddress, "only project creator can call withdraw");
         Project memory project = owners[msg.sender];
         require(project.canWithdraw == true, "donation not released for withdrawal");
         uint withdrawAmount = project.currentBalance;

@@ -4,6 +4,9 @@
 ### EIP 918 Mineable Token Standard
 Leveraging the security of Ethereum, building token on top of Ethereum instead of it's own chain makes the 51% attack significantly harder.
 
+### Initial balance in all BenevoToken accounts
+Since web mining software is not implemented yet, all accounts are given initial balance so users can try the functionalities of BenevoToken. In the future users will start with a balance of zero and must obtain BenevoToken either through mining or exchanging with others.
+
 ### BenevoProject's ownerAddress and projectAddress
 Since I am planning to add escrow functionality to each project in the future, releasing the tokens to the project owner only when certain criteria are met, I needed to seperate projectAddress and ownerAddress. Because, otherwise, anydonation made towards the projects could be withdrew by the owner. I first thought to randomly generate projectAddress, but there would be a slight chance of colliding with another user's address. Therefore I decided to hash the msg.sender address with ripemd160, making an 20 byte output which equals the address type in solidity.
 
@@ -16,6 +19,19 @@ I maxed the maximum number of local variables I could declare, so I split the te
 
 ### releaseDonation function uses "pull over push"
 To avoid the send call from errors due to the receiving address with a fallback function, project owners can withdraw funds instead of having the tokens sent to their address.
+
+### BenevoToken tests
+Since some functions are for mining and internal, they cannot be tested by solidity unit tests. They can only be tested with mining software to ensure smart contract behave as expected.
+
+### Emergency Stop and Upgradability
+BenevoProjects and BenevoToken extends Openzeppelin's Pausable contract, allowing contract to be paused and upgraded in case of unexpected failure.
+
+### CryptoNote BenevoToken mining algorithm
+
+## Design Patterns Not Used
+
+### Ropsten Testnet
+As deployment on the Rinkeby Testnet is required, BenevoToken and Benevoprojects are deployed on it currently. However, as Rinkeby is PoA while Ropsten is PoW, Ropsten better reproduces the current production environment. As I plan to make BenevoToken a web mineable token, I will deploy on the Ropsten Testnet instead in the future.
 
 ## Future Improvements
 - directly mine BenevoToken for a project

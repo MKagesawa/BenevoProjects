@@ -24,38 +24,10 @@ contract ERC20Interface {
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
 }
 
-
 contract ApproveAndCallFallBack {
     function receiveApproval(address from, uint256 tokens, address token, bytes data) public;
 }
-/*
-//already included in Owned OpenZeppelin
-contract Owned {
-    address public owner;
-    address public newOwner;
-    event OwnershipTransferred(address indexed _from, address indexed _to);
 
-    constructor() public {
-        owner = msg.sender;
-    }
-
-    modifier onlyOwner {
-        require(msg.sender == owner);
-        _;
-    }
-
-    function transferOwnership(address _newOwner) public onlyOwner {
-        newOwner = _newOwner;
-    }
-
-    function acceptOwnership() public {
-        require(msg.sender == newOwner);
-        emit OwnershipTransferred(owner, newOwner);
-        owner = newOwner;
-        newOwner = address(0);
-    }
-}
-*/
 
 contract BenevoToken is ERC20Interface, Ownable {
     //all arithmetic operation in this contract uses Openzeppelin's SafeMath library
@@ -93,6 +65,7 @@ contract BenevoToken is ERC20Interface, Ownable {
         @notice Prevent ERC20 short address attack.
         @param size data length
     */
+
     modifier onlyPayloadSize(uint256 size) {
         if(msg.data.length < size + 4) {
             revert("address too short");
@@ -101,19 +74,10 @@ contract BenevoToken is ERC20Interface, Ownable {
     }
 
     /**
-        @notice Accept from only valid addresses
-        @param _address Memory address
-    */
-    modifier onlyValidAddress(address _address) {
-        require(_address != 0x0, "not a valid address (starting from 0x0)");
-        _;
-    }
-
-    /*
         @notice Deafault Constructor
     */
-    
-    constructor() public onlyOwner {
+
+    constructor() public {
         symbol = "BNV";
         name = "BenevoToken";
         decimals = 8;
@@ -128,6 +92,9 @@ contract BenevoToken is ERC20Interface, Ownable {
         miningTarget = _MAXIMUM_TARGET;
         latestDifficultyPeriodStarted = block.number;
         //_startNewMiningEpoch();
+        //All user given initial balance of 1000 for now. In the future, users will start 
+        //with 0 balance must mine the token
+        balances[msg.sender] = 1000;
     }
 
     function mint(uint256 nonce, bytes32 challenge_digest) 
@@ -274,8 +241,6 @@ contract BenevoToken is ERC20Interface, Ownable {
 
     function transfer(address to, uint tokens)
     public 
-    onlyPayloadSize(2 * 32)
-    onlyValidAddress(to)
     returns (bool success) {
         balances[msg.sender] = balances[msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
@@ -307,8 +272,6 @@ contract BenevoToken is ERC20Interface, Ownable {
 
     function transferFrom(address from, address to, uint tokens)
     public
-    onlyValidAddress(from)
-    onlyValidAddress(to)
     returns (bool success) {
         balances[from] = balances[from].sub(tokens);
         allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);
@@ -327,8 +290,6 @@ contract BenevoToken is ERC20Interface, Ownable {
     
     function allowance(address tokenOwner, address spender) 
     public
-    onlyValidAddress(tokenOwner) 
-    onlyValidAddress(spender)
     view returns (uint remaining) {
         return allowed[tokenOwner][spender];
     }
@@ -354,7 +315,7 @@ contract BenevoToken is ERC20Interface, Ownable {
 
     // Owner can transfer out any accidentally sent ERC20 tokens
     function transferAnyERC20Token(address tokenAddress, uint tokens) 
-    public onlyOwner returns (bool success) {
+    public returns (bool success) {
         return ERC20Interface(tokenAddress).transfer(owner, tokens);
     }
 
