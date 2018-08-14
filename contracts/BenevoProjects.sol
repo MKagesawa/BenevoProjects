@@ -51,10 +51,10 @@ contract BenevoProjects is Pausable {
     public whenNotPaused returns(uint, string, uint, uint, uint, address, address){
         projectsCount ++;
         projects[projectsCount] = Project(projectsCount, _name, _goalAmount, 0, 0, msg.sender,
-            this, false);
+            address(ripemd160(abi.encodePacked(msg.sender))), false);
         owners[msg.sender] = projects[projectsCount];
         emit NewProject(projectsCount, _name, _goalAmount, msg.sender);
-        return (projectsCount, _name, _goalAmount, 0, 0, msg.sender, this);
+        return (projectsCount, _name, _goalAmount, 0, 0, msg.sender, address(ripemd160(abi.encodePacked(msg.sender))));
     }
 
     /** @dev Donate BenevoToken to the project
@@ -62,11 +62,10 @@ contract BenevoProjects is Pausable {
       * @param amountToDonate Amount of BenevoToken to donate to the project
     */
     function donate(uint _id, uint amountToDonate) public whenNotPaused returns (uint newBalance){
-        //require(_id > 0 && _id <= projectsCount, "not a valid project address");
+        require(_id > 0 && _id <= projectsCount, "not a valid project address");
         //bnt.transferFrom(msg.sender, projects[_id].projectAddress, amountToDonate);
-        BenevoToken donorBnt = BenevoToken(msg.sender);
-        BenevoToken projectBnt = BenevoToken(this);
-        bnt.transferFrom(msg.sender, this, amountToDonate);
+        bnt = BenevoToken(msg.sender);
+        bnt.transfer(projects[_id].projectAddress, amountToDonate);
         newBalance = projects[_id].currentAmount += amountToDonate;
         return newBalance;
     }

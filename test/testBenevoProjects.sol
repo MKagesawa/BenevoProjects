@@ -17,9 +17,9 @@ contract testBenevoProjects {
     struct Project {
         uint id;
         string name;
-        uint goalAmount;
-        uint currentAmount;
-        uint currentBalance;
+        uint256 goalAmount;
+        uint256 currentAmount;
+        uint256 currentBalance;
         address ownerAddress;
         address projectAddress;
         bool canWithdraw;

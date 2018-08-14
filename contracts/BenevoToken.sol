@@ -56,7 +56,7 @@ contract BenevoToken is ERC20Interface, Ownable {
     bool locked = false;
    
     mapping(bytes32 => bytes32) solutionForChallenge;
-    mapping(address => uint) balances;
+    mapping(address => uint256) public balances;
     mapping(address => mapping(address => uint)) allowed;
     
     event Mint(address indexed from, uint reward_amount, uint epochCount, bytes32 newChallengeNumber);
