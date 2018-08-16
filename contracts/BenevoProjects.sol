@@ -4,6 +4,7 @@ import "node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "contracts/BenevoToken.sol";
 
+
 // pausable enables emergency stop
 contract BenevoProjects is Pausable {
 
@@ -32,6 +33,10 @@ contract BenevoProjects is Pausable {
     mapping (address => Project) owners;
 
     uint public projectsCount = 0;
+
+    constructor () public{
+        bnt = BenevoToken(msg.sender);
+    }
 
     /** @dev Project getter
         @param _id Project id

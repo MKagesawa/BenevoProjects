@@ -27,10 +27,10 @@ contract testBenevoProjects {
 
     // 'Before hook' setups before all tests
     function beforeAll(){
-        BenevoProjects userProject = BenevoProjects(0x00AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA);
-        BenevoToken userToken = BenevoToken(0x00AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA);
+        BenevoProjects userProject = BenevoProjects(0x0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA);
+        BenevoToken userToken = BenevoToken(0x0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB);
         project._createProject("Feed Children", 20000);
-        userAddress = address(0x00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF);
+        userAddress = address(0x0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF);
     }
     
     /** @notice when a project is created, it is important all properties are correct. 
@@ -68,7 +68,7 @@ contract testBenevoProjects {
 
     function testDonate(){
         uint expected = 600;
-        var result = project.donate(1, 600);
+        var result = userProject.donate(1, 600);
         Assert.equal(result, expected, "should have newBalance 600 after donation");
     }
 

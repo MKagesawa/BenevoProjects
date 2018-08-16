@@ -94,7 +94,7 @@ contract BenevoToken is ERC20Interface, Ownable {
         //_startNewMiningEpoch();
         //All user given initial balance of 1000 for now. In the future, users will start 
         //with 0 balance must mine the token
-        balances[msg.sender] = 1000;
+        balances[owner] = 1000;
     }
 
     function mint(uint256 nonce, bytes32 challenge_digest) 
