@@ -35,7 +35,7 @@ contract BenevoProjects is Pausable {
     uint public projectsCount = 0;
 
     constructor () public{
-        bnt = BenevoToken(msg.sender);
+        BenevoToken bnt = new BenevoToken();
     }
 
     /** @dev Project getter
@@ -69,7 +69,6 @@ contract BenevoProjects is Pausable {
     function donate(uint _id, uint amountToDonate) public whenNotPaused returns (uint newBalance){
         require(_id > 0 && _id <= projectsCount, "not a valid project address");
         //bnt.transferFrom(msg.sender, projects[_id].projectAddress, amountToDonate);
-        bnt = BenevoToken(msg.sender);
         bnt.transfer(projects[_id].projectAddress, amountToDonate);
         newBalance = projects[_id].currentAmount += amountToDonate;
         return newBalance;
