@@ -14,7 +14,7 @@ contract testBenevoToken {
 
     function testTransfer(){
         BenevoToken user1 = new BenevoToken();
-        BenevoToken user2 = BenevoToken(DeployedAddresses.BenevoToken());
+        BenevoToken user2 = new BenevoToken();
         uint expectedUser1 = 500;
         uint expectedUser2 = 1500;
         bool expectedSuccess = true;
@@ -26,7 +26,7 @@ contract testBenevoToken {
 
     function testTransferFrom(){
         BenevoToken user1 = new BenevoToken();
-        BenevoToken user2 = BenevoToken(DeployedAddresses.BenevoToken());
+        BenevoToken user2 = new BenevoToken();
         uint expectedUser1 = 600;
         uint expectedUser2 = 1400;
         bool expectedSuccess = true;
