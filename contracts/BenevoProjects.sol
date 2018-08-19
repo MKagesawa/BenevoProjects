@@ -68,7 +68,7 @@ contract BenevoProjects is Pausable {
     */
     function donate(uint _id, uint amountToDonate) public whenNotPaused returns (uint newBalance){
         require(_id > 0 && _id <= projectsCount, "not a valid project address");
-        //bnt.transferFrom(msg.sender, projects[_id].projectAddress, amountToDonate);
+        BenevoToken bnt = new BenevoToken();
         bnt.transfer(projects[_id].projectAddress, amountToDonate);
         newBalance = projects[_id].currentAmount += amountToDonate;
         return newBalance;
@@ -82,7 +82,7 @@ contract BenevoProjects is Pausable {
     function releaseDonation(uint _projectId, uint amountToRelease) public whenNotPaused returns (bool success){
         Project memory project = projects[_projectId];
         require(amountToRelease <= project.currentAmount, "cannot withdraw more than current project balance");
-        require(msg.sender != project.ownerAddress, "only non-project owner can call release Donation");
+        //require(msg.sender != project.ownerAddress, "only non-project owner can call release Donation");
         project.canWithdraw = true;
         return true;
     }
