@@ -42,12 +42,12 @@ contract BenevoToken is ERC20Interface, Ownable {
     // uint public epochCount; 
     // uint public _BLOCKS_PER_READJUSTMENT = 1024;
     //Larger the target, easier to solve the block
-    // uint public _MINIMUM_TARGET = 2**16;
-    // uint public _MAXIMUM_TARGET = 2**224;
-    // uint public miningTarget;
+    uint public _MINIMUM_TARGET = 2**16;
+    uint public _MAXIMUM_TARGET = 2**224;
+    uint public miningTarget;
     //generate a new one when a new reward is minted
     // bytes32 public challengeNumber;
-    // uint public rewardEra;
+    uint public rewardEra;
     // uint public maxSupplyForEra;
     // address public lastRewardTo;
     // uint public lastRewardAmount;
@@ -87,9 +87,9 @@ contract BenevoToken is ERC20Interface, Ownable {
         // locked = false;
         //All BenevoToken must be mined publicly. No ICO or pre-mine
         // tokensMinted = 0;
-        // rewardEra = 0;
+        rewardEra = 0;
         // maxSupplyForEra = _totalSupply.div(2);
-        // miningTarget = _MAXIMUM_TARGET;
+        miningTarget = _MAXIMUM_TARGET;
         // latestDifficultyPeriodStarted = block.number;
         //_startNewMiningEpoch();
         //All user given initial balance of 1000 for now. In the future, users will start 
@@ -184,26 +184,26 @@ contract BenevoToken is ERC20Interface, Ownable {
     //     return challengeNumber;
     // }
 
-    // //the number of zeroes the digest of the PoW solution requires.  Auto adjusts
-    // function getMiningDifficulty() public view returns (uint) {
-    //     return _MAXIMUM_TARGET.div(miningTarget);
-    // }
+    //the number of zeroes the digest of the PoW solution requires.  Auto adjusts
+    function getMiningDifficulty() public view returns (uint) {
+        return _MAXIMUM_TARGET.div(miningTarget);
+    }
 
-    // function getMiningTarget() public view returns (uint) {
-    //     return miningTarget;
-    // }
+    function getMiningTarget() public view returns (uint) {
+        return miningTarget;
+    }
 
     function getAddress() public view returns (address) {
         return msg.sender;
     }
 
-    // //7.2m coins total
-    // //reward begins at 50 and is cut in half every reward era (as tokens are mined)
-    // function getMiningReward() public view returns (uint) {
-    //     //once we get half way thru the coins, only get 25 per block
-    //      //every reward era, the reward amount halves.
-    //     return (50 * 10**uint(decimals) ).div(2**rewardEra) ;
-    // }
+    //7.2m coins total
+    //reward begins at 50 and is cut in half every reward era (as tokens are mined)
+    function getMiningReward() public view returns (uint) {
+        //once we get half way thru the coins, only get 25 per block
+        //every reward era, the reward amount halves.
+        return (50 * 10**uint(decimals)).div(2**rewardEra) ;
+    }
 
     // //help debug mining software
     // function getMintDigest(uint256 nonce, bytes32 challenge_digest, bytes32 challenge_number) 
@@ -222,8 +222,7 @@ contract BenevoToken is ERC20Interface, Ownable {
 
     function totalSupply() 
     public view returns (uint) {
-        //return _totalSupply - balances[address(0)];
-        return 10000;
+        return _totalSupply - balances[address(0)];
     }
 
     /**
@@ -302,6 +301,14 @@ contract BenevoToken is ERC20Interface, Ownable {
     // Token owner can approve for `spender` to transferFrom(...) `tokens`
     // from the token owner's account. The `spender` contract function
     // `receiveApproval(...)` is then executed
+    //Assume you want to send tokens to a serviceContract to pay for a service. 
+    //Because the contracts in general do not receive events, even if you transfer 
+    //the tokens, the serviceContract will never know that you sent the tokens.
+    //The solution is then to approve serviceContract to take the amount required 
+    //from your token balance (that and not more!) first, and then execute a function 
+    //in serviceContract to move the approved tokens form your token balance to the balance 
+    //of serviceContract, and provide you with the service because they are now sure that 
+    //you paid.
     function approveAndCall(address spender, uint tokens, bytes data) 
     public returns (bool success) {
         allowed[msg.sender][spender] = tokens;

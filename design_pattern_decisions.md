@@ -23,12 +23,17 @@ To avoid the send call from errors due to the receiving address with a fallback 
 ### BenevoToken tests
 Since some functions are for mining and internal, they cannot be tested by solidity unit tests. They can only be tested with mining software to ensure smart contract behave as expected.
 
+### Solidity Tests
+On top of benefits of Javascript tests, including a clean-room environment per test suite , direct access to  deployed contracts, and the ability to import any contract dependency, it also is able to be run against any Ethereum client and better reflect the production environment.
+
 ### Emergency Stop and Upgradability
 BenevoProjects and BenevoToken extends Openzeppelin's Pausable contract, allowing contract to be paused and upgraded in case of unexpected failure.
-
+git 
 ### CryptoNote BenevoToken mining algorithm
 
 ## Design Patterns Not Used
+
+### JavaScript Tests
 
 ### Ropsten Testnet
 As deployment on the Rinkeby Testnet is required, BenevoToken and Benevoprojects are deployed on it currently. However, as Rinkeby is PoA while Ropsten is PoW, Ropsten better reproduces the current production environment. As I plan to make BenevoToken a web mineable token, I will deploy on the Ropsten Testnet instead in the future.
