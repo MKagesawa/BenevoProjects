@@ -39,15 +39,4 @@ contract TestBenevoProjects {
         Assert.equal(resultOwnerAddress, expectedOwnerAddress, "should have owner address of the sender");
         Assert.equal(resultProjectAddress, expectedProjectAddress, "should have project address the hash of the address of the sender");
     }
-
-    /** @notice Token transfer deals with value so must be done correctly and securely.
-    */
-
-    function testDonate(){
-        BenevoProjects project = new BenevoProjects();
-        uint expected = 600;
-        project._createProject("Save Animals", 30000);
-        uint result = project.donate(1, 600);
-        Assert.equal(result, expected, "should have newBalance 600 after donation");
-    }
 }

@@ -1,6 +1,6 @@
 pragma solidity ^0.4.19;
 
-import "node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 // Inspired by 0xBitcoin Token and EIP 918 Mineable Token Standard
@@ -29,7 +29,7 @@ contract ApproveAndCallFallBack {
 }
 
 
-contract BenevoToken is ERC20Interface, Ownable {
+contract BenevoToken is ERC20Interface, Pausable {
     //all arithmetic operation in this contract uses Openzeppelin's SafeMath library
     using SafeMath for uint;
     using ExtendedMath for uint;
@@ -98,7 +98,7 @@ contract BenevoToken is ERC20Interface, Ownable {
     }
 
     // function mint(uint256 nonce, bytes32 challenge_digest) 
-    // public returns (bool success) {
+    // public whenNotPaused returns (bool success) {
     //     //the PoW must contain work that includes a recent ethereum block hash (challenge number) 
     //     //and the msg.sender's address to prevent MITM attacks
     //     bytes32 digest = keccak256(abi.encodePacked(challengeNumber, msg.sender, nonce));
@@ -123,7 +123,7 @@ contract BenevoToken is ERC20Interface, Ownable {
     //     return true;
     // }
 
-    // function _startNewMiningEpoch() internal {
+    // function _startNewMiningEpoch() whenNotPaused internal {
     //   //if max supply for the era will be exceeded next reward round then enter the new era before that happens
     //   //40 is the final reward era, almost all tokens minted
     //   //once the final era is reached, more tokens will not be given out because the assert function
@@ -244,7 +244,7 @@ contract BenevoToken is ERC20Interface, Ownable {
     */
 
     function transfer(address to, uint tokens)
-    public 
+    public whenNotPaused
     returns (bool success) {
         balances[msg.sender] = balances[msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
@@ -260,7 +260,7 @@ contract BenevoToken is ERC20Interface, Ownable {
     */
 
     function approve(address spender, uint tokens) 
-    public returns (bool success) {
+    public whenNotPaused returns (bool success) {
         allowed[msg.sender][spender] = tokens;
         emit Approval(msg.sender, spender, tokens);
         return true;
@@ -293,7 +293,7 @@ contract BenevoToken is ERC20Interface, Ownable {
     */
     
     function allowance(address tokenOwner, address spender) 
-    public
+    public whenNotPaused
     view returns (uint remaining) {
         return allowed[tokenOwner][spender];
     }
@@ -310,7 +310,7 @@ contract BenevoToken is ERC20Interface, Ownable {
     //of serviceContract, and provide you with the service because they are now sure that 
     //you paid.
     function approveAndCall(address spender, uint tokens, bytes data) 
-    public returns (bool success) {
+    public whenNotPaused returns (bool success) {
         allowed[msg.sender][spender] = tokens;
         emit Approval(msg.sender, spender, tokens);
         ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, this, data);

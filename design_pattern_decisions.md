@@ -29,6 +29,9 @@ On top of benefits of Javascript tests, including a clean-room environment per t
 ### Two TestBenevoProjects Files
 I split them into two because I had "Error: VM Exception while processing transaction: out of gas" when they were one.
 
+### Circuit Breaker in both BenevoProjects and BenevoToken
+Implementing a circuit breaker in BenevoProjects is understandable. If the platform goes wrong, it gives the developers the tools to pause the platform and upgrade it. However, having a circuit breaker for a token contract may seem unreasonable as it gives excessive power to the developers. Nevertheless, I put circuit breaker in place because what BenevoToken strive to achieve, a web mineable ERC20 Token is relatively new and prone to overlooked security flaws. After launching on the testnet and the contract has been robustly tested, I plan to remove the circuit breaker.
+
 ### Emergency Stop and Upgradability
 BenevoProjects and BenevoToken extends Openzeppelin's Pausable contract, allowing contract to be paused and upgraded in case of unexpected failure.
 git 
