@@ -13,7 +13,7 @@ contract Oracle is usingOraclize{
     
     event LogConstructorInitiated(string nextStep);
     event LogPollutionUpdated(string unit);
-    event LogNewOraclizeQuery(string description);
+    event LogUpdate(string description);
 
     constructor () public{
         //During production the OAR is automatically fetched
@@ -21,7 +21,7 @@ contract Oracle is usingOraclize{
     }
 
     function getPollution() public payable {
-        oraclizeID = oraclize_query("WolframAlpha", "pollution");
+        oraclizeID = oraclize_query("WolframAlpha", "greenhouse gas emissions United States");
     }
     
     function __callback(bytes32 myid, string result) public{

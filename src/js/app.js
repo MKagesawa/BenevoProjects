@@ -7,6 +7,9 @@ App = {
       var projectRow = $('#projectRow');
       var projectTemplate = $('#projectTemplate');
 
+      // Bootstrap the Contract abstraction for use with the current web3 instance
+      //OraclizeContract.setProvider(web3.currentProvider);
+
       for (i = 0; i < data.length; i ++) {
         projectTemplate.find('.panel-title').text(data[i].name);
         projectTemplate.find('img').attr('src', data[i].picture);
@@ -14,6 +17,8 @@ App = {
         projectTemplate.find('.current-amount').text(data[i].currentAmount);
         projectRow.append(projectTemplate.html());
       }
+
+
     });
 
     return App.initWeb3();
@@ -37,6 +42,51 @@ App = {
     });
     return App.bindEvents();
   },
+
+  // Opens a socket and listens for Events defined in Oracle.sol
+  addEventListeners: function(instance){
+    var LogCreated = instance.LogUpdate({},{fromBlock: 0, toBlock: 'latest'});
+    var LogPollutionUpdated = instance.LogPollutionUpdated({},{fromBlock: 0, toBlock: 'latest'});
+    var LogInfo = instance.LogInfo({},{fromBlock: 0, toBlock: 'latest'});
+
+    LogPollutionUpdate.watch(function(err, result){
+      if(!err){
+        App.pollution = result;
+        App.showPollution(App.pollution, App.currentBalance);
+      }else{
+        console.log(err)
+      }
+    })
+
+    // Emitted when the Oracle.sol's constructor is run
+    LogCreated.watch(function(err, result){
+      if(!err){
+        console.log('Contract created!');
+        console.log('Owner: ' , result.args._owner);
+        console.log('Balance: ' , web3.fromWei(result.args._balance, 'ether').toString(), 'ETH');
+        console.log('-----------------------------------');
+      }else{
+        console.log(err)
+      }
+    })
+
+    // Emitted when a text message needs to be logged to the front-end from the Contract
+    LogInfo.watch(function(err, result){
+      if(!err){
+        console.info(result.args)
+      }else{
+        console.error(err)
+      }
+    })
+  },
+
+  showPollution: function(pollution){
+    var row = document.getElementById('row');
+
+    var pollution_element = document.getElementById("pollution");
+    pollution_element.innerHTML = pollution;
+  },
+
 
   bindEvents: function() {
     $(document).on('click', '.btn-donate', App.handleDonate);
@@ -83,7 +133,6 @@ App = {
       });
     });
   }
-
 };
 
 $(function() {
