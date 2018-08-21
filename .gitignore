@@ -70,4 +70,4 @@ typings/
 !.vscode/extensions.json
 
 # ignore build folder since user can easily build it themselves
-build/
+build/*

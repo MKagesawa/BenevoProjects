@@ -3,12 +3,14 @@ pragma solidity ^0.4.19;
 import "node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "contracts/BenevoToken.sol";
+import "github.com/oraclize/ethereum-api/oraclizeAPI.sol";
 
 
 // pausable enables emergency stop
-contract BenevoProjects is Pausable {
+contract BenevoProjects is Pausable, usingOraclize {
 
     BenevoToken bnt;
+    string public ETHUSD;
 
     //all arithmetic operation in this contract uses Openzeppelin's SafeMath library
     using SafeMath for uint;
@@ -16,6 +18,10 @@ contract BenevoProjects is Pausable {
     event NewProject(uint indexed projectId, string indexed name, uint goalAmount, address owner);
     event Donated(address indexed donor, uint projectId, uint amount);
     event Withdraw(address indexed from, address indexed to, uint tokens); 
+
+    event LogConstructorInitiated(string nextStep);
+    event LogPriceUpdated(string price);
+    event LogNewOraclizeQuery(string description);
 
     //currentAmount is total amount of token donated. currentBalnace is currentAmount minus tokens the owner already withdrew
     struct Project {
@@ -36,6 +42,7 @@ contract BenevoProjects is Pausable {
 
     constructor () public{
         BenevoToken bnt = new BenevoToken();
+        LogConstructorInitiated("Constructor was initiated. Call 'updatePrice()' to send the Oraclize Query.");
     }
 
     /** @dev Project getter
@@ -100,9 +107,23 @@ contract BenevoProjects is Pausable {
         bnt.transferFrom(project.projectAddress, project.ownerAddress, withdrawAmount);
     }
 
+    function __callback(bytes32 myid, string result) {
+        if (msg.sender != oraclize_cbAddress()) revert();
+        ETHUSD = result;
+        LogPriceUpdated(result);
+    }
+
+    function updatePrice() payable {
+        if (oraclize_getPrice("URL") > this.balance) {
+           LogNewOraclizeQuery("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
+        } else {
+           LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
+           oraclize_query("URL", "json(https://api.gdax.com/products/ETH-USD/ticker).price");
+        }
+    }
+
     /** @dev Eth payable fallback
     */
-
     function () public payable {
         revert("Don't accept ETH");
     }

@@ -73,7 +73,7 @@ App = {
 
       var account = accounts[0];
 
-      App.contracts.Adoption.deployed().then(function(instance){
+      App.contracts.BenevoProjects.deployed().then(function(instance){
         donationInstance = instance;
         return donationInstance.donate(projectId, {from: account});
       }).then(function(result){
