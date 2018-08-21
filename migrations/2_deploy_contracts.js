@@ -3,6 +3,7 @@ var Pausable    = artifacts.require("node_modules/openzeppelin-solidity/contract
 var Ownable    = artifacts.require("node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol");
 var BenevoProjects = artifacts.require("BenevoProjects");
 var BenevoToken    = artifacts.require("BenevoToken");
+var Oracle = artifacts.require("Oracle");
 
 module.exports = function(deployer){
     deployer.deploy(SafeMath);
@@ -10,4 +11,5 @@ module.exports = function(deployer){
     deployer.deploy(Ownable);
     deployer.deploy(BenevoProjects);
     deployer.deploy(BenevoToken);
+    deployer.deploy(Oracle);
 };

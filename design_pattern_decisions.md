@@ -41,6 +41,11 @@ git
 
 ### JavaScript Tests
 
+### Oraclize Solidity Tests
+There are not tests for functions using Oracle such as getPollution() and __callback() because these functions require an external call to Oraclize and cannot be tested with solidty tests.
+
+
+
 ### Ropsten Testnet
 As deployment on the Rinkeby Testnet is required, BenevoToken and Benevoprojects are deployed on it currently. However, as Rinkeby is PoA while Ropsten is PoW, Ropsten better reproduces the current production environment. As I plan to make BenevoToken a web mineable token, I will deploy on the Ropsten Testnet instead in the future.
 
