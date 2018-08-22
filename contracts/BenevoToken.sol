@@ -246,6 +246,10 @@ contract BenevoToken is ERC20Interface, Pausable {
     function transfer(address to, uint tokens)
     public whenNotPaused
     returns (bool success) {
+        //prevent Integer Underflow
+        require(balances[msg.sender] - tokens <= balances[msg.sender]);
+        //prevent Integer Overflow
+        require(balances[to] + tokens >= balances[to]);
         balances[msg.sender] = balances[msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
         emit Transfer(msg.sender, to, tokens);
@@ -277,8 +281,12 @@ contract BenevoToken is ERC20Interface, Pausable {
     function transferFrom(address from, address to, uint tokens)
     public
     returns (bool success) {
+        //prevent Integer Underflow
+        require(balances[from] - tokens <= balances[from]);
+        //prevent Integer Overflow
+        require(balances[to] + tokens >= balances[to]);
         balances[from] = balances[from].sub(tokens);
-        // allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);
+        allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
         emit Transfer(from, to, tokens);
         return true;
@@ -317,22 +325,22 @@ contract BenevoToken is ERC20Interface, Pausable {
         return true;
     }
 
-    // /**
-    //     @notice Eth payable fallback
-    // */
+    /**
+        @notice Eth payable fallback
+    */
 
-    // function () public payable {
-    //     revert("Don't accept ETH");
-    // }
+    function () public payable {
+        revert("Don't accept ETH");
+    }
 
-    // // Owner can transfer out any accidentally sent ERC20 tokens
-    // function transferAnyERC20Token(address tokenAddress, uint tokens) 
-    // public returns (bool success) {
-    //     return ERC20Interface(tokenAddress).transfer(owner, tokens);
-    // }
+    // Owner can transfer out any accidentally sent ERC20 tokens
+    function transferAnyERC20Token(address tokenAddress, uint tokens) 
+    public returns (bool success) {
+        return ERC20Interface(tokenAddress).transfer(owner, tokens);
+    }
 
-    // //kill the smart contract
-    // function kill() public onlyOwner {
-    //     selfdestruct(owner);
-    // }
+    //kill the smart contract
+    function kill() public onlyOwner {
+        selfdestruct(owner);
+    }
 }

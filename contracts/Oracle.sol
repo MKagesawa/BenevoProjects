@@ -17,7 +17,7 @@ contract Oracle is usingOraclize{
 
     constructor () public{
         //During production the OAR is automatically fetched
-        LogConstructorInitiated("Constructor was initiated. Call 'updatePrice()' to send the Oraclize Query.");
+        emit LogConstructorInitiated("Constructor was initiated. Call 'updatePrice()' to send the Oraclize Query.");
     }
 
     function getPollution() public payable {

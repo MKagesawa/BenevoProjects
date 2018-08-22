@@ -16,10 +16,6 @@ contract BenevoProjects is Pausable {
     event Donated(address indexed donor, uint projectId, uint amount);
     event Withdraw(address indexed from, address indexed to, uint tokens); 
 
-    event LogConstructorInitiated(string nextStep);
-    event LogPollutionUpdated(string unit);
-    event LogNewOraclizeQuery(string description);
-
     //currentAmount is total amount of token donated. currentBalnace is currentAmount minus tokens the owner already withdrew
     struct Project {
         uint id;
@@ -39,7 +35,6 @@ contract BenevoProjects is Pausable {
 
     constructor () public{
         BenevoToken bnt = new BenevoToken();
-        LogConstructorInitiated("Constructor was initiated. Call 'updatePrice()' to send the Oraclize Query.");
     }
 
     /** @dev Project getter
@@ -71,21 +66,23 @@ contract BenevoProjects is Pausable {
       * @param amountToDonate Amount of BenevoToken to donate to the project
     */
     function donate(uint _id, uint amountToDonate) public whenNotPaused returns (uint newBalance){
-        require(_id > 0 && _id <= projectsCount, "not a valid project address");
+        // require(_id > 0 && _id <= projectsCount, "not a valid project address");
         BenevoToken bnt = new BenevoToken();
+        //prevent Integer Overflow
+        require(projects[_id].currentAmount + amountToDonate >= projects[_id].currentAmount);
+        require(projects[_id].currentBalance + amountToDonate >= projects[_id].currentBalance);
         bnt.transfer(projects[_id].projectAddress, amountToDonate);
         newBalance = projects[_id].currentAmount += amountToDonate;
+        projects[_id].currentBalance += amountToDonate; 
         return newBalance;
     }
 
     /** @dev Release the escrowed donation to the project owner 
         @param _projectId Project ID
-        @param amountToRelease Amount of BenevoToken to be released
     */
 
-    function releaseDonation(uint _projectId, uint amountToRelease) public whenNotPaused returns (bool success){
+    function releaseDonation(uint _projectId) public whenNotPaused returns (bool success){
         Project memory project = projects[_projectId];
-        require(amountToRelease <= project.currentAmount, "cannot withdraw more than current project balance");
         //require(msg.sender != project.ownerAddress, "only non-project owner can call release Donation");
         project.canWithdraw = true;
         return true;
@@ -94,18 +91,27 @@ contract BenevoProjects is Pausable {
     /** @dev project owner can withdraw all the tokens that were released
      */
 
-    function withdrawToken() external{
-        require(msg.sender == project.ownerAddress, "only project creator can call withdraw");
+    function withdrawToken() external returns (uint _currentBalance){
+        // require(msg.sender == project.ownerAddress, "only project creator can call withdraw");
         Project memory project = owners[msg.sender];
-        require(project.canWithdraw == true, "donation not released for withdrawal");
+        //require(project.canWithdraw == true, "donation not released for withdrawal");
         uint withdrawAmount = project.currentBalance;
         //Subtract withdraw amount before releasing token to for best practice
-        project.currentBalance = 0;
-        bnt.transferFrom(project.projectAddress, project.ownerAddress, withdrawAmount);
+        _currentBalance = project.currentBalance = 0;
+        //project.transfer(project.ownerAddress, withdrawAmount);
+        return _currentBalance;
+    }
+
+    /** @dev Eth payable fallback
+    */
+
+    function () public payable {
+        revert("Don't accept ETH");
     }
 
     /** @dev kill the contract
     */
+
     function kill() public onlyOwner {
         selfdestruct(owner);
     }

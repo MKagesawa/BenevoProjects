@@ -8,12 +8,12 @@ import "../contracts/BenevoProjects.sol";
 contract TestBenevoProjects2 {
     BenevoToken bnt = BenevoToken(DeployedAddresses.BenevoToken());
     BenevoProjects project = BenevoProjects(DeployedAddresses.BenevoProjects());
+    BenevoProjects donor = BenevoProjects(DeployedAddresses.BenevoProjects());
     
     /** @notice Token transfer deals with value so must be done correctly and securely.
     */
 
     function testDonate(){
-        BenevoProjects project = new BenevoProjects();
         uint expected = 600;
         project._createProject("Save Animals", 30000);
         uint result = project.donate(1, 600);
@@ -24,11 +24,9 @@ contract TestBenevoProjects2 {
     */
 
     function testReleaseDonation(){
-        BenevoProjects donor = BenevoProjects(DeployedAddresses.BenevoProjects());
         project._createProject("Save Animals", 30000);
-        donor.donate(1, 600);
         bool expectedSuccess = true;
-        bool resultSuccess = donor.releaseDonation(1, 200);
+        bool resultSuccess = donor.releaseDonation(1);
         Assert.equal(resultSuccess, expectedSuccess, "project property canWithdraw should be true now");
     }
 
@@ -40,22 +38,19 @@ contract TestBenevoProjects2 {
             After 200 tokens are released and withdrawn, the project should have balance 800
             and the project owner should have 1200 toknes (1000 token unpon initialization + 200 withdrawn).
         */
-        BenevoProjects donor = BenevoProjects(DeployedAddresses.BenevoProjects());
-        donor.releaseDonation(1, 500);
+        project.releaseDonation(1);
         uint expectedCurrentBalance = 0;
         uint expectedCurrentAmount = 600;
-        project.withdrawToken;
-        var (resultName, resultGoalAmount, resultCurrentAmount, resultCurrentBalance, resultOwnerAddress, 
+        uint resultCurrentBalance = project.withdrawToken();
+        var (resultName, resultGoalAmount, resultCurrentAmount, CurrentBalance, resultOwnerAddress, 
         resultProjectAddress, canWithdraw) = project.getProject(1);
         Assert.equal(resultCurrentBalance, expectedCurrentBalance, "current balance should be 0 after withdraw");
         Assert.equal(resultCurrentAmount, expectedCurrentAmount, "current amount should be 600");
     }
 
-    /** @notice Last test commented out to prevent "out of gas" error 
-    */
-    // function testDonate2(){
-    //     uint expectedCurrentAmount = 1300;
-    //     uint resultCurrentAmount = project.donate(1, 700);
-    //     Assert.equal(resultCurrentAmount, expectedCurrentAmount, "should have current amount 1300 after 2 donations");
-    // }
+    function testDonate2(){
+        uint expectedCurrentAmount = 1300;
+        uint resultCurrentAmount = project.donate(1, 700);
+        Assert.equal(resultCurrentAmount, expectedCurrentAmount, "should have current amount 1300 after 2 donations");
+    }
 }

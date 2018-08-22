@@ -26,16 +26,16 @@ Since some functions are for mining and internal, they cannot be tested by solid
 ### Solidity Tests
 On top of benefits of Javascript tests, including a clean-room environment per test suite , direct access to  deployed contracts, and the ability to import any contract dependency, it also is able to be run against any Ethereum client and better reflect the production environment.
 
-### Two TestBenevoProjects Files
-I split them into two because I had "Error: VM Exception while processing transaction: out of gas" when they were one.
-
 ### Circuit Breaker in both BenevoProjects and BenevoToken
 Implementing a circuit breaker in BenevoProjects is understandable. If the platform goes wrong, it gives the developers the tools to pause the platform and upgrade it. However, having a circuit breaker for a token contract may seem unreasonable as it gives excessive power to the developers. Nevertheless, I put circuit breaker in place because what BenevoToken strive to achieve, a web mineable ERC20 Token is relatively new and prone to overlooked security flaws. After launching on the testnet and the contract has been robustly tested, I plan to remove the circuit breaker.
 
-### Emergency Stop and Upgradability
-BenevoProjects and BenevoToken extends Openzeppelin's Pausable contract, allowing contract to be paused and upgraded in case of unexpected failure.
-git 
+### Two TestBenevoProjects Files
+I split them into two because I had "Error: VM Exception while processing transaction: out of gas" when they were one.
+
 ### CryptoNote BenevoToken mining algorithm
+
+### BenevoToken transferAnyERC20Token function
+In case any ERC20 token is accidentally sent to an BenevoToken address, the user can safely transfer those tokens out of the address. If such function is not implemented, those tokens would be lost
 
 ## Design Patterns Not Used
 
