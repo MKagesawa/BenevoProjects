@@ -1,1 +1,17 @@
-Rinkeby testnet deployed
+#Rinkeby testnet deployed
+I have made code public so you can check it matches what I have on my github
+
+  ### BenevoProjects 
+  TxHash: 0x656dd46265ea8451004cd78a6116b6f46f49a2c1
+  You can view the deployed contract along with verified source code here:
+  https://rinkeby.etherscan.io/address/0x656dd46265ea8451004cd78a6116b6f46f49a2c1#code
+
+  ### BenevoToken
+  TxHash: 0xe4b98a1ace060ce72f657f34e3a034db5e53518d
+You can view the deployed contract along with verified source code here:
+https://rinkeby.etherscan.io/address/0xe4b98a1ace060ce72f657f34e3a034db5e53518d#code
+
+  ### Oracle 
+  TxHash: 0x2aa4b5932cf78b70003b7c1780b82ebd8cdf6f1d
+You can view the deployed contract along with verified source code here:
+https://rinkeby.etherscan.io/address/0x2aa4b5932cf78b70003b7c1780b82ebd8cdf6f1d#code

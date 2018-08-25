@@ -26,13 +26,15 @@ Since some functions are for mining and internal, they cannot be tested by solid
 ### Solidity Tests
 On top of benefits of Javascript tests, including a clean-room environment per test suite , direct access to  deployed contracts, and the ability to import any contract dependency, it also is able to be run against any Ethereum client and better reflect the production environment.
 
+### Flattened contracts for Rinkeby Deployment
+Since Etherscan verification does not support "import", all files that imports from other files have to be concatenated into one file.
+I combied the files for Rinkeby deployment, but codes for local development are seperated.
+
 ### Circuit Breaker in both BenevoProjects and BenevoToken
 Implementing a circuit breaker in BenevoProjects is understandable. If the platform goes wrong, it gives the developers the tools to pause the platform and upgrade it. However, having a circuit breaker for a token contract may seem unreasonable as it gives excessive power to the developers. Nevertheless, I put circuit breaker in place because what BenevoToken strive to achieve, a web mineable ERC20 Token is relatively new and prone to overlooked security flaws. After launching on the testnet and the contract has been robustly tested, I plan to remove the circuit breaker.
 
 ### Two TestBenevoProjects Files
 I split them into two because I had "Error: VM Exception while processing transaction: out of gas" when they were one.
-
-### CryptoNote BenevoToken mining algorithm
 
 ### BenevoToken transferAnyERC20Token function
 In case any ERC20 token is accidentally sent to an BenevoToken address, the user can safely transfer those tokens out of the address. If such function is not implemented, those tokens would be lost
@@ -40,14 +42,14 @@ In case any ERC20 token is accidentally sent to an BenevoToken address, the user
 ## Design Patterns Not Used
 
 ### JavaScript Tests
+I chose to use Solidity tests instead of JavaScript tests because Solidity tests
 
 ### Oraclize Solidity Tests
 There are not tests for functions using Oracle such as getPollution() and __callback() because these functions require an external call to Oraclize and cannot be tested with solidty tests.
 
-
-
 ### Ropsten Testnet
-As deployment on the Rinkeby Testnet is required, BenevoToken and Benevoprojects are deployed on it currently. However, as Rinkeby is PoA while Ropsten is PoW, Ropsten better reproduces the current production environment. As I plan to make BenevoToken a web mineable token, I will deploy on the Ropsten Testnet instead in the future.
+As deployment on the Rinkeby Testnet is required for the course, BenevoToken and Benevoprojects are deployed on it currently. However, as Rinkeby is PoA while Ropsten is PoW, Ropsten better reproduces the current production environment. As I plan to make BenevoToken a web mineable token, I will deploy on the Ropsten Testnet instead in the future.
 
 ## Future Improvements
-- directly mine BenevoToken for a project
+- Finish implementing BenevoToken to make it web browser mineable ERC20 Token
+- Use hashing algorithm other than keccak256 to make it GPU and ASICs resistant. The aim is for more people to become aware of the charitable projects and participate in 
