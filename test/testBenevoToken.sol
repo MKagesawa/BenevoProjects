@@ -5,13 +5,19 @@ import "truffle/DeployedAddresses.sol";
 import "../contracts/BenevoToken.sol";
 
 contract TestBenevoToken {
+    
+    /** @notice Some mining related functions in BenevoToken cannot be tested through solidity tests. 
+                Basic functions of ERC20 tokens such as transfer are throughly tested
+    */
 
+    /** @notice All initialized accounts should start with 1000 tokens */
     function testInitialBalances(){
         BenevoToken bnt = new BenevoToken();
         uint expected = 1000;
         Assert.equal(bnt.balanceOf(this), expected, "Initialized account should have 1000 token");
     }
 
+    /** @notice transfer of 500 tokens should reflect on the account balances */
     function testTransfer(){
         BenevoToken user1 = new BenevoToken();
         BenevoToken user2 = new BenevoToken();
@@ -23,7 +29,7 @@ contract TestBenevoToken {
         Assert.equal(user1.balanceOf(this), expectedUser1, "User1 should have 500 tokens");
     }
 
-    //Mining difficulty initially should be 1
+    /** @notice mining difficulty should start off easy and gradually increase as more miners join */
     function testMiningDifficulty(){
         BenevoToken bnt = new BenevoToken();
         uint expected = 1;
@@ -31,8 +37,7 @@ contract TestBenevoToken {
         Assert.equal(result, expected, "Initial mining difficulty should be 1");
     }
 
-    //Mining target initially should equal the maximum target (start with a block easy to solve
-    // and gradually become more difficult to solve as more miners join)
+    /** @notice Mining target initially should equal the maximum target */
     function testMiningTarget(){
         BenevoToken bnt = new BenevoToken();
         uint expected = 2**224;
@@ -40,15 +45,15 @@ contract TestBenevoToken {
         Assert.equal(result, expected, "Initial mining target should be 2**224");
     }
 
-    //Total supply should equal to 720000000000000
+    /** @notice Total supply should equal to 7200000 */
     function testTotalSupply(){
         BenevoToken bnt = new BenevoToken();
-        uint expected = 720000000000000;
+        uint expected = 7200000;
         uint result = bnt.totalSupply();
-        Assert.equal(result, expected, "Initial total supply should be 720000000000000");
+        Assert.equal(result, expected, "Initial total supply should be 7200000");
     }
 
-    //Approval should return true
+    /** @notice Approval function should work and return true */
     function testApprove(){
         BenevoToken user1 = new BenevoToken();
         BenevoToken user2 = new BenevoToken();
@@ -57,7 +62,7 @@ contract TestBenevoToken {
         Assert.equal(resultSuccess, expectedSuccess, "User1 approving user2 spending 50 tokens should return true");
     }
 
-    //should return address of the caller
+    /** @notice should return address of the caller */
     function testGetAddress(){
         BenevoToken bnt = new BenevoToken();
         address expectedAddress = this;
@@ -65,11 +70,11 @@ contract TestBenevoToken {
         Assert.equal(resultAddress, expectedAddress, "getAddress function should return the address of the caller ");
     }
 
-    //Mining difficulty initially should be 1
+    /** @notice Initial mining reward should be 50 tokens */
     function testGetMiningReward(){
         BenevoToken bnt = new BenevoToken();
-        uint expected = 5000000000;
+        uint expected = 50;
         uint result = bnt.getMiningReward();
-        Assert.equal(result, expected, "Mining Reward should be 5000000000 in the original era");
+        Assert.equal(result, expected, "Mining Reward should be 50 in the original era");
     }
 }

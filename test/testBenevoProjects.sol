@@ -13,7 +13,6 @@ contract TestBenevoProjects {
     /** @notice when a project is created, it is important all properties are correct. 
         The hashing function also must output correctly.
     */
-
     function test_CreateProject1(){
         uint expectedId = 1;
         var expectedName = "Save Animals";
@@ -28,6 +27,7 @@ contract TestBenevoProjects {
         Assert.equal(resultCurrentAmount, expectedCurrentAmount, "should have current amount 0");
     }
 
+    /** @notice Same create project as above split to two tests to avoid running 'out of gas' error */
     function test_CreateProject2(){
         uint expectedCurrentBalance = 0;
         address expectedOwnerAddress = this;

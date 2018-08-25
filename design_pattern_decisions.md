@@ -53,3 +53,4 @@ As deployment on the Rinkeby Testnet is required for the course, BenevoToken and
 ## Future Improvements
 - Finish implementing BenevoToken to make it web browser mineable ERC20 Token
 - Use hashing algorithm other than keccak256 to make it GPU and ASICs resistant. The aim is for more people to become aware of the charitable projects and participate in 
+- Make frontend
