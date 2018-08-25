@@ -761,7 +761,7 @@ body {
     font-size: 14px;
     line-height: 1.42857143;
     color: #333;
-    background-color: #fff;
+    background: #202024;
 }
 button, input, select, textarea {
     font-family: inherit;
@@ -840,7 +840,7 @@ hr {
     font-family: inherit;
     font-weight: 500;
     line-height: 1.1;
-    color: inherit;
+    color: #fff;
 }
 .h1 .small, .h1 small, .h2 .small, .h2 small, .h3 .small, .h3 small, .h4 .small, .h4 small, .h5 .small, .h5 small, .h6 .small, .h6 small, h1 .small, h1 small, h2 .small, h2 small, h3 .small, h3 small, h4 .small, h4 small, h5 .small, h5 small, h6 .small, h6 small {
     font-weight: 400;
@@ -4124,20 +4124,23 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
 }
 .panel {
     margin-bottom: 20px;
-    background-color: #fff;
+    background-color: #2e2e30;
     border: 1px solid transparent;
     border-radius: 4px;
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
 }
 .panel-body {
-    padding: 15px;
+    padding: 0px;
+    color: #fff;
 }
 .panel-heading {
     padding: 10px 15px;
     border-bottom: 1px solid transparent;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
+        background-color: #2e2e30;
+
 }
 .panel-heading>.dropdown .dropdown-toggle {
     color: inherit;
@@ -4146,7 +4149,9 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
     margin-top: 0;
     margin-bottom: 0;
     font-size: 16px;
-    color: inherit;
+    background-color: #2e2e30;
+    color: #fff;
+    font-family: "nidus_sansregular"
 }
 .panel-title>.small, .panel-title>.small>a, .panel-title>a, .panel-title>small, .panel-title>small>a {
     color: inherit;
@@ -4272,7 +4277,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
 }
 .panel-default>.panel-heading {
     color: #333;
-    background-color: #f5f5f5;
+    background-color: #2e2e30;
     border-color: #ddd;
 }
 .panel-default>.panel-heading+.panel-collapse>.panel-body {
