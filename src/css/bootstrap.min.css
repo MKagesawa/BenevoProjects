@@ -792,7 +792,7 @@ img {
     height: auto;
 }
 .img-rounded {
-    border-radius: 6px;
+    border-radius: 0px;
 }
 .img-thumbnail {
     display: inline-block;
@@ -2140,11 +2140,12 @@ select[multiple].input-lg, textarea.input-lg {
 }
 }.btn {
     display: inline-block;
-    padding: 6px 12px;
+    padding: 5px 105px;
     margin-bottom: 0;
     font-size: 14px;
     font-weight: 400;
     line-height: 1.42857143;
+    font-family: nidus_sansregular;
     text-align: center;
     white-space: nowrap;
     vertical-align: middle;
@@ -2157,7 +2158,7 @@ select[multiple].input-lg, textarea.input-lg {
     user-select: none;
     background-image: none;
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: 0px;
 }
 .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
     outline: 5px auto -webkit-focus-ring-color;
@@ -2186,7 +2187,6 @@ a.btn.disabled, fieldset[disabled] a.btn {
 .btn-default {
     color: #333;
     background-color: #fff;
-    border-color: #ccc;
 }
 .btn-default.focus, .btn-default:focus {
     color: #333;
@@ -2431,13 +2431,13 @@ a.btn.disabled, fieldset[disabled] a.btn {
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;
-    border-radius: 3px;
+    border-radius: 0px;
 }
 .btn-group-xs>.btn, .btn-xs {
     padding: 1px 5px;
     font-size: 12px;
     line-height: 1.5;
-    border-radius: 3px;
+    border-radius: 0px;
 }
 .btn-block {
     display: block;
@@ -4126,7 +4126,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
     margin-bottom: 20px;
     background-color: #2e2e30;
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: 0px;
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
 }
