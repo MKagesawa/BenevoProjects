@@ -39,10 +39,18 @@ I split them into two because I had "Error: VM Exception while processing transa
 ### BenevoToken transferAnyERC20Token function
 In case any ERC20 token is accidentally sent to an BenevoToken address, the user can safely transfer those tokens out of the address. If such function is not implemented, those tokens would be lost
 
+### IPFS
+In order to make the dapp truely decentralized, all images used for front-end is published on IPFS. 
+Take a look at projects.json or id="banner" on index.html file to check. 
+Here are some example images:
+QmZtBdDZPj8iLgMZymJSksA9dbTTQMR6kU8hoQsEY8p5mu ducksInOil.jpg
+QmRYjkxiTVimLnQMpQZS6PXqW1C177237rpdmRyGrWGXVE forestAndCity.jpg
+
 ## Design Patterns Not Used
 
 ### JavaScript Tests
-I chose to use Solidity tests instead of JavaScript tests because Solidity tests
+I chose to use Solidity tests instead of JavaScript tests because Solidity can test how contracts interact with each other, rather than only how the contract interact with web3 frontend. 
+As BenevoProject is dependent on BenevoTokens for donations and etc, I decided that at this stage solidity tests are more important.
 
 ### Oraclize Solidity Tests
 There are not tests for functions using Oracle such as getPollution() and __callback() because these functions require an external call to Oraclize and cannot be tested with solidty tests.
@@ -53,4 +61,5 @@ As deployment on the Rinkeby Testnet is required for the course, BenevoToken and
 ## Future Improvements
 - Finish implementing BenevoToken to make it web browser mineable ERC20 Token
 - Use hashing algorithm other than keccak256 to make it GPU and ASICs resistant. The aim is for more people to become aware of the charitable projects and participate in 
-- Make frontend
+- Work on front-end
+- Publish the entire site on IPFS to make the dApp fully decentralized.

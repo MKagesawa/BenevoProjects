@@ -1,31 +1,31 @@
 [
   {
     "name": "Stop Cutting Trees",
-    "picture": "images/forestAndCity.jpg",
+    "picture": "https://gateway.ipfs.io/ipfs/QmRYjkxiTVimLnQMpQZS6PXqW1C177237rpdmRyGrWGXVE/",
     "goalAmount": 500000,
     "currentAmount": 0
   },
   {
     "name": "Stop Polluting Ocean",
-    "picture": "images/ocean.jpg",
+    "picture": "https://gateway.ipfs.io/ipfs/QmVybXWksHwEfbKLZm7zzW9zDcZEq5RBEcLBbk3iDQqseR/",
     "goalAmount": 3200000,
     "currentAmount": 2000
   },
   {
     "name": "Keep Animals Clean",
-    "picture": "images/ducksInOil.jpg",
+    "picture": "https://gateway.ipfs.io/ipfs/QmZtBdDZPj8iLgMZymJSksA9dbTTQMR6kU8hoQsEY8p5mu/",
     "goalAmount": 40000,
     "currentAmount": 1310
   },
   {
     "name": "Ban GMO Crops",
-    "picture": "images/wheatField.jpg",
+    "picture": "https://gateway.ipfs.io/ipfs/QmUxZDApSQy7qhvrieMWictRQGb92pRbmBjp9tQ33KGZ6g/",
     "goalAmount": 390000,
     "currentAmount": 300
   },
   {
     "name": "Slow Down Global Warming",
-    "picture": "images/iceMelting.jpg",
+    "picture": "https://gateway.ipfs.io/ipfs/QmV2n9YuavcPesxoG5p6Nh9fqLKqqf9VbLGdG4LgPsWN27/",
     "goalAmount": 42800000,
     "currentAmount": 32334
   }
