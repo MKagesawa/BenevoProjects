@@ -12,9 +12,9 @@ contract TestBenevoToken {
 
     /** @notice All initialized accounts should start with 1000 tokens */
     function testInitialBalances(){
-        BenevoToken bnt = new BenevoToken();
+        BenevoToken bnv = new BenevoToken();
         uint expected = 1000;
-        Assert.equal(bnt.balanceOf(this), expected, "Initialized account should have 1000 token");
+        Assert.equal(bnv.balanceOf(this), expected, "Initialized account should have 1000 token");
     }
 
     /** @notice transfer of 500 tokens should reflect on the account balances */
@@ -31,25 +31,25 @@ contract TestBenevoToken {
 
     /** @notice mining difficulty should start off easy and gradually increase as more miners join */
     function testMiningDifficulty(){
-        BenevoToken bnt = new BenevoToken();
+        BenevoToken bnv = new BenevoToken();
         uint expected = 1;
-        uint result = bnt.getMiningDifficulty();
+        uint result = bnv.getMiningDifficulty();
         Assert.equal(result, expected, "Initial mining difficulty should be 1");
     }
 
     /** @notice Mining target initially should equal the maximum target */
     function testMiningTarget(){
-        BenevoToken bnt = new BenevoToken();
+        BenevoToken bnv = new BenevoToken();
         uint expected = 2**224;
-        uint result = bnt.getMiningTarget();
+        uint result = bnv.getMiningTarget();
         Assert.equal(result, expected, "Initial mining target should be 2**224");
     }
 
     /** @notice Total supply should equal to 7200000 */
     function testTotalSupply(){
-        BenevoToken bnt = new BenevoToken();
+        BenevoToken bnv = new BenevoToken();
         uint expected = 7200000;
-        uint result = bnt.totalSupply();
+        uint result = bnv.totalSupply();
         Assert.equal(result, expected, "Initial total supply should be 7200000");
     }
 
@@ -64,17 +64,17 @@ contract TestBenevoToken {
 
     /** @notice should return address of the caller */
     function testGetAddress(){
-        BenevoToken bnt = new BenevoToken();
+        BenevoToken bnv = new BenevoToken();
         address expectedAddress = this;
-        address resultAddress = bnt.getAddress();
+        address resultAddress = bnv.getAddress();
         Assert.equal(resultAddress, expectedAddress, "getAddress function should return the address of the caller ");
     }
 
     /** @notice Initial mining reward should be 50 tokens */
     function testGetMiningReward(){
-        BenevoToken bnt = new BenevoToken();
+        BenevoToken bnv = new BenevoToken();
         uint expected = 50;
-        uint result = bnt.getMiningReward();
+        uint result = bnv.getMiningReward();
         Assert.equal(result, expected, "Mining Reward should be 50 in the original era");
     }
 }

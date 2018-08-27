@@ -7,7 +7,7 @@ import "../contracts/BenevoProjects.sol";
 
 contract TestBenevoProjects {
 
-    BenevoToken bnt = BenevoToken(DeployedAddresses.BenevoToken());
+    BenevoToken bnv = BenevoToken(DeployedAddresses.BenevoToken());
     BenevoProjects project = BenevoProjects(DeployedAddresses.BenevoProjects());
     
     /** @notice when a project is created, it is important all properties are correct. 

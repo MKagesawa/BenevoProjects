@@ -20,7 +20,7 @@ import "contracts/BenevoToken.sol";
 contract BenevoProjects is Pausable {
     
     /** @dev BenevoProjects uses BenevoToken for donations */
-    BenevoToken bnt;
+    BenevoToken bnv;
 
     /** @dev all arithmetic operation in this contract uses Openzeppelin's SafeMath library */
     using SafeMath for uint;
@@ -51,7 +51,7 @@ contract BenevoProjects is Pausable {
     uint public projectsCount = 0;
 
     constructor () public{
-        BenevoToken bnt = new BenevoToken();
+        BenevoToken bnv = new BenevoToken();
     }
 
     /** @dev Project getter
@@ -85,13 +85,14 @@ contract BenevoProjects is Pausable {
     */
     function donate(uint _id, uint amountToDonate) public whenNotPaused returns (uint newBalance){
         // require(_id > 0 && _id <= projectsCount, "not a valid project address");
-        BenevoToken bnt = new BenevoToken();
+        BenevoToken bnv = new BenevoToken();
         //prevent Integer Overflow
         require(projects[_id].currentAmount + amountToDonate >= projects[_id].currentAmount, "Project currentAmount IntegerOverflow");
         require(projects[_id].currentBalance + amountToDonate >= projects[_id].currentBalance, "Project amountToDonate IntegerOverflow");
-        bnt.transfer(projects[_id].projectAddress, amountToDonate);
+        bnv.transfer(projects[_id].projectAddress, amountToDonate);
         newBalance = projects[_id].currentAmount += amountToDonate;
         projects[_id].currentBalance += amountToDonate; 
+        emit Donated(msg.sender, _id, amountToDonate);
         return newBalance;
     }
 

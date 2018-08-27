@@ -1,6 +1,6 @@
 # BenevoProjects
 
-![logo](https://gateway.ipfs.io/ipfs/QmW8LAsjQ2AuNxy2moCqyxd5B8vs4JG7wcnqtmpP5hVNGs 'BenevoProjects')
+![logo](https://s22.postimg.cc/5slfs834x/Screen_Shot_2018-08-26_at_8.25.56_PM.png 'BenevoProjects')
 
 ## Overview
 Biggest reasons why people do not donate or volunteer are 
@@ -29,12 +29,18 @@ Checkout:
         ```npm install -g truffle```
     - [MetaMask](https://metamask.io/)
 
+    - [NodeJS](https://nodejs.org/en/download/)
+
+    - For more details on installing Truffle on Ubuntu 16.04 check [here](http://www.techtonet.com/how-to-install-and-execute-truffle-on-an-ubuntu-16-04/)
+
 - Start Ganache by running `ganache-cli`
 - To compile the smart contracts, run `truffle compile` on another terminal window
 - To deploy contracts to ganache locally, run `truffle migrate`
 - To run all solidity tests in the test folder, run `truffle test`
 - To install all npm dependencies needed, run `npm install`
 - Run `npm run dev` to fire up a local server on `http://localhost:3000/`
+
+  If you see error `/usr/bin/env: node: No such file or directory`, then try running `ln -s /usr/bin/nodejs /usr/bin/node`.
 - Log in your Ganache account on MetaMask by choosing `Private Network` and you're set!
 
 

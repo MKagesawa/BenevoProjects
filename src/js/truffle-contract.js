@@ -6273,7 +6273,7 @@ function stripZeros(aInput) {
   return a;
 }
 
-function bnToBuffer(bnInput) {
+function bnvoBuffer(bnInput) {
   var bn = bnInput; // eslint-disable-line
   var hex = bn.toString(16); // eslint-disable-line
   if (hex.length % 2) {
@@ -6314,9 +6314,9 @@ function hexOrBuffer(valueInput, name) {
 
 function hexlify(value) {
   if (typeof value === 'number') {
-    return '0x' + bnToBuffer(new BN(value)).toString('hex');
+    return '0x' + bnvoBuffer(new BN(value)).toString('hex');
   } else if (value.mod || value.modulo) {
-    return '0x' + bnToBuffer(value).toString('hex');
+    return '0x' + bnvoBuffer(value).toString('hex');
   } else {
     // eslint-disable-line
     return '0x' + hexOrBuffer(value).toString('hex');
@@ -6652,7 +6652,7 @@ function getParamCoder(typeInput) {
 
 module.exports = {
   BN: BN,
-  bnToBuffer: bnToBuffer,
+  bnvoBuffer: bnvoBuffer,
   isHexString: isHexString,
   hexOrBuffer: hexOrBuffer,
   hexlify: hexlify,

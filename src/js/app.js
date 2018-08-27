@@ -2,14 +2,14 @@ App = {
   web3Provider: null,
   contracts: {},
 
+  // Load up example projects
   init: function() {
     $.getJSON('../projects.json', function(data) {
       var projectRow = $('#projectRow');
       var projectTemplate = $('#projectTemplate');
 
       // Bootstrap the Contract abstraction for use with the current web3 instance
-      //OraclizeContract.setProvider(web3.currentProvider);
-
+      // OraclizeContract.setProvider(web3.currentProvider);
       for (i = 0; i < data.length; i ++) {
         projectTemplate.find('.panel-title').text(data[i].name);
         projectTemplate.find('img').attr('src', data[i].picture);
@@ -17,31 +17,67 @@ App = {
         projectTemplate.find('.current-amount').text(data[i].currentAmount);
         projectRow.append(projectTemplate.html());
       }
-
-
     });
-
     return App.initWeb3();
   },
 
   initWeb3: function() {
-    if (typeof web3 !== 'undefined'){
+    if (typeof web3 !== 'undefined') {
       App.web3Provider = web3.currentProvider;
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      // If no injected web3 instance is detected, fall back to ganache-cli
+      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
+      web3 = new Web3(App.web3Provider);
     }
-    //Deleted fallback
-    web3 = new Web3(App.web3Provider);
     return App.initContract();
   },
 
   initContract: function() {
-    $.getJSON('projects.json', function(data){
-      var ProjectArtifact = data;
-      App.contracts.BenevoProjects = TruffleContract(ProjectArtifact);
+    $.getJSON('BenevoProjects.json', function(projects){
+      App.contracts.BenevoProjects = TruffleContract(projects);
       App.contracts.BenevoProjects.setProvider(App.web3Provider);
-      return App.markDonated();
+      // return App.markDonated();
+      App.listenForEvents();
+      return App.render();
+      // return App.bindEvents();
     });
-    return App.bindEvents();
   },
+
+  // Listen for events emitted from the contracts
+  listenForEvents: function() {
+    App.contracts.BenevoProjects.deployed().then(function(instance) {
+      // Restart Chrome if unable to receive this event
+      instance.Donated({}, {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }).watch(function(error, event) {
+        console.log("event triggered", event)
+        // Reload when Donated
+        App.render();
+      });
+      instance.NewProject({}, {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }).watch(function(error, event) {
+        console.log("event triggered", event)
+        // Reload when Donated
+        App.render();
+      });
+      instance.Withdraw({}, {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }).watch(function(error, event) {
+        console.log("event triggered", event)
+        // Reload when Donated
+        App.render();
+      });
+    });
+  },
+
+  render: function() {
+
+  }
 
   // Opens a socket and listens for Events defined in Oracle.sol
   addEventListeners: function(instance){
@@ -89,7 +125,7 @@ App = {
 
 
   bindEvents: function() {
-    $(document).on('click', '.btn-donate', App.handleDonate);
+    $(document).on('click', '.btn-donate', App.Donate);
   },
 
   markDonated: function(donors, account) {
@@ -110,7 +146,7 @@ App = {
     });
   },
 
-  handleDonate: function(event) {
+  Donate: function(event) {
     event.preventDefault();
 
     var projectId = parseInt($(event.target).data('id'));
